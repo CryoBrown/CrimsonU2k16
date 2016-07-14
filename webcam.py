@@ -20,9 +20,9 @@ def show_webcam(mirror=False):
 		'''
 		Processing
 		'''
-		gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-		blur = cv2.GaussianBlur(gray,(5,5),0)
-		ret,thresh1 = cv2.threshold(blur,70,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+		#gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+		#blur = cv2.GaussianBlur(gray,(5,5),0)
+		#ret,thresh1 = cv2.threshold(blur,70,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
 
 		'''
@@ -31,7 +31,7 @@ def show_webcam(mirror=False):
 		cv2.imshow('Webcam', img)
 		#cv2.imshow('Gray', gray)
 		#cv2.imshow('Blur', blur)
-		cv2.imshow('Post', thresh1)
+		#cv2.imshow('Post', thresh1)
 
 	cv2.destroyAllWindows()
 

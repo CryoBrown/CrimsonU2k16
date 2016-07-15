@@ -8,7 +8,7 @@ import numpy as np
 import math
 
 cam = cv2.VideoCapture(0)
-fgbg = cv2.createBackgroundSubtractorMOG2(history=750)
+fgbg = cv2.createBackgroundSubtractorMOG2(history=250)
 
 class CamError(Exception):
     def __init__(self, value):
@@ -24,14 +24,16 @@ def poll_webcam():
     else:
         raise CamError("Reading from webcam failed.")
 
-def prepare_box(img, pt1, pt2):
-    cv2.rectangle(img, pt1, pt2, (0, 255, 0), 0)
+def grab_box(img, pt1, pt2):
     crop_img = img[pt1[1]:pt2[1], pt1[0]:pt2[0]]
-    value = (21, 21)
-    blur = cv2.GaussianBlur(crop_img, value, 0)
-    fgmask = fgbg.apply(crop_img)
-    #post1 = cv2.GaussianBlur(fgmask, value, 5)
-    return fgmask
+    return crop_img
+
+def process_image(img):
+    fg = fgbg.apply(img)
+    erosion = cv2.erode(fg, None, iterations=1)
+    dilation = cv2.dilate(erosion, None, iterations=1)
+    blur = cv2.GaussianBlur(dilation, (3, 3), 0)
+    return blur
 
 def box_gen(fg, minw, minh, maxw, maxh):
     image, contours, hierarchy = cv2.findContours(fg.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -59,13 +61,12 @@ def box_draw(boxes, img):
 def main():
     while cam.isOpened():
         img = poll_webcam()
-        fg = fgbg.apply(img)
-        blur = cv2.GaussianBlur(fg, (5, 5), 0)
-        boxes = box_gen(blur, 150, 250, 300, 600)
+        post = process_image(img)
+        boxes = box_gen(post, 150, 250, 400, 700)
         box_draw(boxes, img)
-        box_draw(boxes, blur)
+        box_draw(boxes, post)
         cv2.imshow('Webcam', img)
-        cv2.imshow('Post', blur)
+        cv2.imshow('Post', post)
         if cv2.waitKey(1) == 27:
             break  # esc to quit
     cv2.destroyAllWindows()

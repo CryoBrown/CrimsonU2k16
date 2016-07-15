@@ -8,7 +8,7 @@ import numpy as np
 import math
 
 cam = cv2.VideoCapture(0)
-fgbg = cv2.createBackgroundSubtractorMOG2()
+fgbg = cv2.createBackgroundSubtractorMOG2(history=1000)
 
 class CamError(Exception):
     def __init__(self, value):
@@ -28,19 +28,12 @@ def poll_webcam():
 
 def prepare_box(img, pt1, pt2):
     cv2.rectangle(img, pt1, pt2, (0, 255, 0), 0)
-    crop_img = img[pt1[0]:pt2[0], pt1[1]:pt2[1]]
-    #grey = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
-    #value = (35, 35)
-    blurred = cv2.GaussianBlur(grey, value, 0)
-  #  thresh = cv2.threshold(blurred, 127, 255,
-   #                        cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    #thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-    #                            cv2.THRESH_BINARY_INV, 11, 2)
-    #cv2.imshow('Thresholded', thresh)
+    crop_img = img[pt1[1]:pt2[1], pt1[0]:pt2[0]]
+    value = (21, 21)
+    blur = cv2.GaussianBlur(crop_img, value, 0)
     fgmask = fgbg.apply(crop_img)
-    #cv2.imshow('frame', fgmask)
-    return fgmask, crop_img
-
+    post1 = cv2.GaussianBlur(fgmask, value, 5)
+    return post1, crop_img
 
 def contour_work(thresh1, crop_img, img):
     image, contours, hierarchy = cv2.findContours(thresh1.copy(),
@@ -106,8 +99,10 @@ def contour_work(thresh1, crop_img, img):
 def main():
     while cam.isOpened():
         img = poll_webcam()
-        thresh, crop = prepare_box(img, (100, 100), (300, 300))
+        prep, crop = prepare_box(img, (100, 100), (1100, 700))
         cv2.imshow('Webcam', img)
+        cv2.imshow('Post1', prep)
+        #cv2.imshow('Post2', crop)
         #contour_work(thresh, crop, img)
         if cv2.waitKey(1) == 27:
             break  # esc to quit

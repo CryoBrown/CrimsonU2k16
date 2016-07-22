@@ -9,7 +9,7 @@ import numpy as np
 import math
 
 cam = cv2.VideoCapture(0)
-fgbg = cv2.createBackgroundSubtractorMOG2(history=400)
+fgbg = cv2.createBackgroundSubtractorMOG2(history=400, detectShadows=False, varThreshold=100)
 
 
 class CamError(Exception):
@@ -30,7 +30,7 @@ def poll_webcam():
 
 def process_image(img):
     fg = fgbg.apply(img)
-    erosion = cv2.erode(fg, None, iterations=1)
+    erosion = cv2.erode(fg, None, iterations=2)
     dilation = cv2.dilate(erosion, None, iterations=1)
     blur = cv2.GaussianBlur(dilation, (5, 5), 0)
     return blur
@@ -82,7 +82,7 @@ def choose_fullest_box(boxes, img):
         if cur > ratio:
             best = box
             ratio = cur
-        print cur
+        #print  cur
     return best
 
 

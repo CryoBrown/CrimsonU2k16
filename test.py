@@ -4,7 +4,7 @@ import numpy
 import cv2
 
 def detect(img):
-    cascade = cv2.CascadeClassifier("/Users/malhotrd/Documents/opencv/data/haarcascades/cascade.xml")
+    cascade = cv2.CascadeClassifier("haar_classifier/classifier/cascade.xml")
     rects = cascade.detectMultiScale(img, 1.3, 4,  cv2.CASCADE_SCALE_IMAGE, (20,20))
 
     if len(rects) == 0:

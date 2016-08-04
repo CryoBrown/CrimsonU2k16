@@ -68,9 +68,12 @@ class JustureListener(Leap.Listener):
             if L.count(0)==4 and finger_list[0]<0:
                 print"Volume is set to 0"
                 os.system(vol_minus)
+                os.system("afplay /System/Library/LoginPlugins/BezelServices.loginPlugin/Contents/Resources/volume.aiff > /dev/null 2>&1 &") 
             elif L.count(1)==1 and finger_list[0]>0:
                 print"Volume is set to 10"
-                os.system(vol_plus)     
+                os.system(vol_plus)   
+                os.system("afplay /System/Library/LoginPlugins/BezelServices.loginPlugin/Contents/Resources/volume.aiff > /dev/null 2>&1 &") 
+  
                            
 
 

@@ -53,16 +53,25 @@ class JustureListener(Leap.Listener):
             win.push(hand)
 
             cur = win.extended_tuple(hand)
+            num = win.int_tuple(cur)
 
-            print("Extended: %s", cur)
+            print("Extended: %s", num)
             print("Avg: %s", win.ext_average)
 
+
             if cur == tuple([True, True, True, True, True]):
-                actions.sleep_mac_display()
+                if win.check_average(win.ext_average, tuple([0.9, 0.9, 0.9, 0.9, 0.9]), num):
+                    actions.sleep_mac_display()
+                pass
             elif cur == tuple([True, False, False, False, False]):
-                self.volume_change(hand.fingers[0])
+                if win.check_average(win.ext_average, tuple([0.8, 0.2, 0.2, 0.2, 0.2]), num):
+                    self.volume_change(hand.fingers[0])
             elif cur == tuple([False, False, False, False, True]):
-                self.volume_change(hand.fingers[4])
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.2, 0.2, 0.8]), num):
+                    self.volume_change(hand.fingers[4])
+            elif cur == tuple([False, False, True, True, True]):
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
+                    actions.toggle_spotify()
 
 
         if not (frame.hands.is_empty and frame.gestures().is_empty):
@@ -126,6 +135,13 @@ class JustureWindow():
             l.append(finger in fse)
         return tuple(l)
 
+    #Get integer of extended tuple
+    def int_tuple(self, ext):
+        l = []
+        for f in ext:
+            l.append(int(f))
+        return tuple(l)
+
     def round_float(self, f):
         e = 0.01/self.capacity
         if(f < e):
@@ -135,9 +151,35 @@ class JustureWindow():
         else:
             return f
 
+    def check_average(self, real, thresholds, expected):
+        print "-----------"
+        print real
+        print thresholds
+        print expected
+        for (r, t, e) in zip(real, thresholds, expected):
+            if (e == 0 and r > t):
+                print str(r)
+                print ">"
+                print str(t)
+                return False
+            elif (e == 1 and r < t):
+                print str(r)
+                print "<"
+                print str(t)
+                return False
+        return True
+
+    def oldest(self):
+        return self.queue[0]
+
+    def newest(self):
+        return self.queue[-1]
+
+
+
 def main():
     # Create a sample listener and controller
-    listener = JustureListener(10, 20)
+    listener = JustureListener(50, 10)
     controller = Leap.Controller()
     controller.set_policy(Leap.Controller.POLICY_BACKGROUND_FRAMES)
 

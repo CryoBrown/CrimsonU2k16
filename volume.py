@@ -3,12 +3,16 @@ sys.path.insert(0,'/Users/malhotrd/Documents/Leap/LeapSDK/lib')
 import Leap
 import subprocess
 
-y="osascript -e" 
-x='"set Volume 0"'
-w='"set Volume 10"'
-z=y+x
-q=y+w
+# y="osascript -e" 
+# x='"set Volume 0"'
+# w='"set Volume 10"'
+# z=y+x
+# q=y+w
 
+# v ="osascript -e"
+# vol1 = '"set volume output volume (output volume of (get volume settings) + 6)"'
+vol_plus="osascript -e" + '"set volume output volume (output volume of (get volume settings) + 6)"'
+vol_minus = "osascript -e" + '"set volume output volume (output volume of (get volume settings) - 6)"'
 
 
 def sleep_mac_display():
@@ -63,10 +67,10 @@ class JustureListener(Leap.Listener):
            
             if L.count(0)==4 and finger_list[0]<0:
                 print"Volume is set to 0"
-                os.system(z)
+                os.system(vol_minus)
             elif L.count(1)==1 and finger_list[0]>0:
                 print"Volume is set to 10"
-                os.system(q)     
+                os.system(vol_plus)     
                            
 
 

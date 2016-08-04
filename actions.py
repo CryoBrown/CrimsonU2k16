@@ -1,15 +1,17 @@
 import subprocess
 import time
+import os
 
 osa = "osascript"
 lb = '-e'
+FNULL = open(os.devnull, 'w')
 
 '''
 Causes the screen to sleep, which will also lock if your settings
 are set appropriately (they should be anyway, set them that way)
 '''
 def sleep_mac_display():
-    subprocess.call('pmset displaysleepnow')
+    subprocess.call(['pmset', 'displaysleepnow'])
 
 '''
 Toggles pause/play for spotify
@@ -35,7 +37,8 @@ def toggle_spotify():
 Plays the volume change sound
 '''
 def volume_sound():
-    subprocess.call(["afplay", "/System/Library/LoginPlugins/BezelServices.loginPlugin/Contents/Resources/volume.aiff > /dev/null 2>&1 &"])
+    subprocess.call(["afplay", "/System/Library/LoginPlugins/BezelServices.loginPlugin/Contents/Resources/volume.aiff"], 
+        stdout=FNULL, stderr=FNULL)
 
 '''
 Increases volume

@@ -51,7 +51,7 @@ class JustureListener(Leap.Listener):
                 
                 L.append(int(finger in finger_extended))
             print L
-            for x in range(frame.id)
+            # for x in range(frame.id)
             if L[0] ==0:
                 if L[1]==0:
                     sleep_mac_display()

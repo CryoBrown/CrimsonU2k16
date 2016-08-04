@@ -38,7 +38,8 @@ def volume_up():
 Decreases volume
 '''
 def volume_down():
-    vol_minus = "osascript -e" + '"set volume output volume (output volume of (get volume settings) - 6)"'
+    vol_minus = "set volume output volume (output volume of (get volume settings) - 6)"
+    subprocess.call([osa, lb, vol_minus])
     volume_sound()
 
 

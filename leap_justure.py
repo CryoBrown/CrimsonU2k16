@@ -52,6 +52,9 @@ class JustureListener(Leap.Listener):
             print("Extended: %s", win.extended_tuple(hand))
             print("Avg: %s", win.ext_average)
 
+            for finger in hand.fingers:
+                print ("Direction: %s" % (finger.direction))
+
         if not (frame.hands.is_empty and frame.gestures().is_empty):
             print ""
 
@@ -86,7 +89,7 @@ class JustureWindow():
         l = []
         #string  = str(self.ext_average) + ("-" if subtract else "+") + str(hand_tuple)
         for (a, b) in zip(self.ext_average, hand_tuple):
-            l.append(a + (scale * b))
+            l.append(self.round_float(a + (scale * b)))
         #print (string + "=" + str(l))
         self.ext_average = tuple(l)
 
@@ -104,6 +107,15 @@ class JustureWindow():
         for finger in hand.fingers:
             l.append(finger in fse)
         return tuple(l)
+
+    def round_float(self, f):
+        e = 0.01/self.capacity
+        if(f < e):
+            return 0
+        elif(1-f < e):
+            return 1
+        else:
+            return f
 
 def main():
     # Create a sample listener and controller

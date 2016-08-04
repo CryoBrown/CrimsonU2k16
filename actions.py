@@ -14,7 +14,18 @@ def sleep_mac_display():
 
 '''
 Toggles pause/play for spotify
+
+
+
 '''
+def touchless():
+	line4= 'activate application "Safari"'
+	# line3= 'repeat 10 times'
+	line5= 'tell application "System Events" to keystroke "Down Arrow"'
+	line6 = 'end repeat'
+	subprocess.call([osa, lb, line4, lb, line5, lb, line6])
+
+
 def toggle_spotify():
     line1 = 'tell application "Spotify"'
     line2 = 'playpause'

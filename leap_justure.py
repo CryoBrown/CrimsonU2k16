@@ -2,6 +2,8 @@ import os, sys, thread, time
 sys.path.insert(0,"/Users/brownch/proj/LeapSDK/lib")
 import Leap
 
+import actions
+
 class JustureListener(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
@@ -49,14 +51,30 @@ class JustureListener(Leap.Listener):
                 win = self.r_win
             print "-------------"
             win.push(hand)
-            print("Extended: %s", win.extended_tuple(hand))
+
+            cur = win.extended_tuple(hand)
+
+            print("Extended: %s", cur)
             print("Avg: %s", win.ext_average)
 
-            for finger in hand.fingers:
-                print ("Direction: %s" % (finger.direction))
+            if cur == tuple([True, True, True, True, True]):
+                actions.sleep_mac_display()
+            elif cur == tuple([True, False, False, False, False]):
+                self.volume_change(hand.fingers[0])
+            elif cur == tuple([False, False, False, False, True]):
+                self.volume_change(hand.fingers[4])
+
 
         if not (frame.hands.is_empty and frame.gestures().is_empty):
             print ""
+
+    def volume_change(self, finger):
+        if finger.direction[0] < 0:
+            actions.volume_down()
+        else:
+            actions.volume_up()
+
+
 
 class JustureWindow():
 
@@ -121,6 +139,7 @@ def main():
     # Create a sample listener and controller
     listener = JustureListener(10, 20)
     controller = Leap.Controller()
+    controller.set_policy(Leap.Controller.POLICY_BACKGROUND_FRAMES)
 
     # Have the sample listener receive events from the controller
     controller.add_listener(listener)

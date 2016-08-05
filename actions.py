@@ -19,12 +19,19 @@ Toggles pause/play for spotify
 
 
 '''
-def touchless():
-	line4= 'activate application "Safari"'
-	# line3= 'repeat 10 times'
-	line5= 'tell application "System Events" to keystroke "Down Arrow"'
-	line6 = 'end repeat'
-	subprocess.call([osa, lb, line4, lb, line5, lb, line6])
+def touchless_right():
+    line4= 'activate application "Safari"'
+    # line3= 'repeat 10 times'
+    line5= 'tell application "System Events" to key code 124'
+    line6 = 'end repeat'
+    subprocess.call([osa, lb, line5]) 
+
+def touchless_left():
+    line4= 'activate application "Safari"'
+    # line3= 'repeat 10 times'
+    line5= 'tell application "System Events" to key code 123'
+    line9 = 'end repeat'
+    subprocess.call([osa, lb, line5]) 
 
 
 def toggle_spotify():

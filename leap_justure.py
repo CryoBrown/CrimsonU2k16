@@ -52,6 +52,8 @@ class JustureListener(Leap.Listener):
             print "-------------"
             win.push(hand)
 
+            fingers = hand.fingers
+
             cur = win.extended_tuple(hand)
             num = win.int_tuple(cur)
 
@@ -72,6 +74,24 @@ class JustureListener(Leap.Listener):
             elif cur == tuple([False, False, True, True, True]):
                 if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
                     actions.toggle_spotify()
+            elif cur == tuple([False,True,False,False,False]):
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
+                    oldhand = win.oldest()
+                    win.extended_tuple(oldhand) == tuple([False,True,True,False,False])
+                    oldx = oldhand.fingers[1].stabilized_tip_position[0]
+                    newx = fingers[1].stabilized_tip_position[0]
+                    vel = oldx-newx
+                    print "velocity", vel
+                    if vel > 30:
+                        actions.touchless_left()
+                        win.reroll(win.capacity)
+                        time.sleep(.8)
+                    elif vel < -30:
+                        actions.touchless_right()
+                        win.reroll(win.capacity)
+                        time.sleep(.8)
+
+                        
 
 
         if not (frame.hands.is_empty and frame.gestures().is_empty):
@@ -82,7 +102,6 @@ class JustureListener(Leap.Listener):
             actions.volume_down()
         else:
             actions.volume_up()
-
 
 
 class JustureWindow():
@@ -185,7 +204,7 @@ class JustureWindow():
 
 def main():
     # Create a sample listener and controller
-    listener = JustureListener(50, 10)
+    listener = JustureListener(15, 3)
     controller = Leap.Controller()
     controller.set_policy(Leap.Controller.POLICY_BACKGROUND_FRAMES)
 

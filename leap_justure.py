@@ -170,9 +170,15 @@ class JustureWindow():
         return True
 
     def oldest(self):
+        if len(self.queue) == 0:
+            print "Nothing in the window"
+            return None
         return self.queue[0]
 
     def newest(self):
+        if len(self.queue) == 0:
+            print "Nothing in the window"
+            return None
         return self.queue[-1]
 
 

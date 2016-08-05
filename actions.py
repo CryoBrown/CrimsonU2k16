@@ -14,24 +14,31 @@ def sleep_mac_display():
     subprocess.call(['pmset', 'displaysleepnow'])
 
 '''
-Right arrow key press event
-'''
-def touchless_right():
-    line1= 'tell application "System Events" to key code 124'
-    subprocess.call([osa, lb, line1])
-'''
-Left arrow key press event
-'''
-def touchless_left():
-    line1= 'tell application "System Events" to key code 123'
-    subprocess.call([osa, lb, line1])
+Toggles pause/play for spotify
+
+
 
 '''
-Toggles pause/play for spotify
-'''
-def toggle_play():
-    line1 = 'tell application "System Events" to key code 100'
-    subprocess.call([osa, lb, line1])
+def touchless_right():
+    line4= 'activate application "Safari"'
+    # line3= 'repeat 10 times'
+    line5= 'tell application "System Events" to key code 124'
+    line6 = 'end repeat'
+    subprocess.call([osa, lb, line5]) 
+
+def touchless_left():
+    line4= 'activate application "Safari"'
+    # line3= 'repeat 10 times'
+    line5= 'tell application "System Events" to key code 123'
+    line9 = 'end repeat'
+    subprocess.call([osa, lb, line5]) 
+
+
+def toggle_spotify():
+    line1 = 'tell application "Spotify"'
+    line2 = 'playpause'
+    line3 = 'end tell'
+    subprocess.call([osa, lb, line1, lb, line2, lb, line3])
 
 '''
 Plays the volume change sound
@@ -65,7 +72,7 @@ Then close the terminal and they will suffer
 def grief_poor_user(x):
     while True:
         time.sleep(x)
-        toggle_play()
+        toggle_spotify()
 
 
 

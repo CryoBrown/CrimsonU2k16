@@ -43,14 +43,13 @@ class JustureListener(Leap.Listener):
         # Get hands
         for hand in frame.hands:
 
-            print "---------------------------------------------"
             if hand.is_left:
                 print "LH"
                 win = self.l_win
             else:
                 print "RH"
                 win = self.r_win
-            print "---------------------------------------------"
+            print "-------------"
             win.push(hand)
 
             fingers = hand.fingers
@@ -63,26 +62,26 @@ class JustureListener(Leap.Listener):
 
 
             if cur == tuple([True, True, True, True, True]):
-                if win.check_average(tuple([0.9, 0.9, 0.9, 0.9, 0.9]), num):
+                if win.check_average(win.ext_average, tuple([0.9, 0.9, 0.9, 0.9, 0.9]), num):
                     actions.sleep_mac_display()
                 pass
             elif cur == tuple([True, False, False, False, False]):
-                if win.check_average(tuple([0.8, 0.2, 0.2, 0.2, 0.2]), num):
+                if win.check_average(win.ext_average, tuple([0.8, 0.2, 0.2, 0.2, 0.2]), num):
                     self.volume_change(hand.fingers[0])
             elif cur == tuple([False, False, False, False, True]):
-                if win.check_average(tuple([0.2, 0.2, 0.2, 0.2, 0.8]), num):
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.2, 0.2, 0.8]), num):
                     self.volume_change(hand.fingers[4])
             elif cur == tuple([False, False, True, True, True]):
-                if win.check_average(tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
                     actions.toggle_spotify()
             elif cur == tuple([False,True,False,False,False]):
-                if win.check_average(tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
+                if win.check_average(win.ext_average, tuple([0.2, 0.2, 0.8, 0.8, 0.8]), num):
                     oldhand = win.oldest()
                     win.extended_tuple(oldhand) == tuple([False,True,True,False,False])
                     oldx = oldhand.fingers[1].stabilized_tip_position[0]
                     newx = fingers[1].stabilized_tip_position[0]
                     vel = oldx-newx
-                    #print "velocity", vel
+                    print "velocity", vel
                     if vel > 30:
                         actions.touchless_left()
                         win.reroll(win.capacity)
@@ -171,34 +170,28 @@ class JustureWindow():
         else:
             return f
 
-    def check_average(self, thresholds, expected):
-        #print "-----------"
-        #print real
-        #print thresholds
-        #print expected
-        for (r, t, e) in zip(self.ext_average, thresholds, expected):
+    def check_average(self, real, thresholds, expected):
+        print "-----------"
+        print real
+        print thresholds
+        print expected
+        for (r, t, e) in zip(real, thresholds, expected):
             if (e == 0 and r > t):
-               # print str(r)
-                #print ">"
-                #print str(t)
+                print str(r)
+                print ">"
+                print str(t)
                 return False
             elif (e == 1 and r < t):
-                #print str(r)
-                #print "<"
-                #print str(t)
+                print str(r)
+                print "<"
+                print str(t)
                 return False
         return True
 
     def oldest(self):
-        if len(self.queue) == 0:
-            print "Nothing in the window"
-            return None
         return self.queue[0]
 
     def newest(self):
-        if len(self.queue) == 0:
-            print "Nothing in the window"
-            return None
         return self.queue[-1]
 
 
